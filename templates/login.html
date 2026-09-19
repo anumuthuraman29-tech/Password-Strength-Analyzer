@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — SecurePass Security Suite</title>
+  <meta name="description" content="SecurePass — Professional Cybersecurity Login Portal">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Left Hero Brand Column -->
+    <div class="auth-hero">
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <div class="logo-shield" style="width: 44px; height: 44px; font-size: 1.35rem;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <span style="font-size: 1.35rem; font-weight: 800;">Secure<span class="gradient-text">Pass</span></span>
+          <p style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Cybersecurity Operations</p>
+        </div>
+      </div>
+
+      <div style="max-width: 500px; z-index: 2; margin: 3rem 0;">
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-full); font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 1.5rem;">
+          <i class="fa-solid fa-lock"></i> Zero-Knowledge Client Architecture
+        </div>
+        <h1 style="font-size: 2.5rem; line-height: 1.15; margin-bottom: 1rem;">
+          Secure your <span class="gradient-text">digital identity</span> with enterprise precision.
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6;">
+          Analyze, generate and strengthen your passwords with real-time heuristic evaluations, entropy metrics, and zero credential storage.
+        </p>
+
+        <!-- Feature Points -->
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 0.85rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-check" style="color: var(--strength-strong);"></i>
+            <span>Real-time cryptographic entropy & strength meter</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-check" style="color: var(--strength-strong);"></i>
+            <span>Python secrets module CSPRNG password generation</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-check" style="color: var(--strength-strong);"></i>
+            <span>Strict privacy: analyzed passwords never stored or logged</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.75rem;">
+        <span class="status-dot"></span>
+        <span>SecurePass v2.4 Enterprise Guard • Ready</span>
+      </div>
+    </div>
+
+    <!-- Right Login Form Column -->
+    <div class="auth-form-wrap">
+      <div class="glass-card auth-card">
+        <div style="margin-bottom: 1.75rem;">
+          <h2 style="font-size: 1.5rem; margin-bottom: 0.35rem;">Access SecOps Portal</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Sign in to your cybersecurity workspace.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="toast error" style="position: static; margin-bottom: 1.25rem; width: 100%;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST" id="loginForm">
+          <div style="margin-bottom: 1.25rem;">
+            <label for="username" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Username or Email</label>
+            <div class="input-group-cyber">
+              <input type="text" id="username" name="username" class="input-cyber" placeholder="admin@securepass.io" required value="secops_admin">
+              <span class="input-action-btn" style="pointer-events: none;">
+                <i class="fa-solid fa-user-shield"></i>
+              </span>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label for="loginPassword" style="font-size: 0.85rem; font-weight: 600;">Password</label>
+              <a href="#" onclick="showToast('Demo account password pre-filled or enter any valid password', 'info')" style="font-size: 0.8rem;">Forgot password?</a>
+            </div>
+            <div class="input-group-cyber">
+              <input type="password" id="loginPassword" name="password" class="input-cyber" placeholder="••••••••••••" required value="SecurePass#2026!">
+              <button type="button" class="input-action-btn" id="toggleLoginPassword" aria-label="Toggle password view">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+              <input type="checkbox" name="remember" checked style="accent-color: var(--accent-cyan);">
+              <span>Remember this station</span>
+            </label>
+            <span style="font-size: 0.78rem; color: var(--text-dim);">TLS 1.3 Active</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width: 100%; padding: 0.85rem;">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>Authenticate Session</span>
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+          <span>Need an enterprise account? </span>
+          <a href="#" onclick="showToast('Direct registration is restricted to corporate domain admins.', 'info')">Register here</a>
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); text-align: center;">
+          <a href="{{ url_for('landing') }}" style="font-size: 0.82rem; color: var(--text-dim); display: inline-flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-arrow-left"></i> Return to Public Landing Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    const toggleBtn = document.getElementById('toggleLoginPassword');
+    const pwdInput = document.getElementById('loginPassword');
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        pwdInput.setAttribute('type', type);
+        toggleBtn.querySelector('i').className = type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+      });
+    }
+
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+    if (form && submitBtn) {
+      form.addEventListener('submit', () => {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+      });
+    }
+  </script>
+</body>
+</html>

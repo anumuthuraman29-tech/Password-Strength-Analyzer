@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecurePass — Cyber Defense Password Strength Analyzer</title>
+  <meta name="description" content="Build Stronger Passwords. Protect Your Digital Life with SecurePass cybersecurity analyzer.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- Landing Top Nav -->
+  <header style="padding: 1.25rem 2.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; background: rgba(7, 11, 20, 0.85);">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div class="logo-shield">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <span style="font-size: 1.25rem; font-weight: 800;">Secure<span class="gradient-text">Pass</span></span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="{{ url_for('login') }}" class="btn btn-secondary" style="padding: 0.55rem 1.2rem; font-size: 0.88rem;">
+        <i class="fa-solid fa-right-to-bracket"></i> Login
+      </a>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-primary" style="padding: 0.55rem 1.25rem; font-size: 0.88rem;">
+        <span>Open Console</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section style="max-width: 1100px; margin: 0 auto; padding: 5rem 1.5rem 3rem 1.5rem; text-align: center;">
+    <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-full); font-size: 0.82rem; color: var(--accent-cyan); margin-bottom: 1.5rem;">
+      <i class="fa-solid fa-shield-virus"></i> Enterprise-Grade Heuristic Security Suite
+    </div>
+
+    <h1 style="font-size: 3.5rem; line-height: 1.15; margin-bottom: 1.25rem; font-weight: 800;">
+      Build Stronger Passwords.<br>
+      <span class="gradient-text">Protect Your Digital Life.</span>
+    </h1>
+
+    <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 680px; margin: 0 auto 2.5rem auto; line-height: 1.6;">
+      SecurePass analyzes password strength, calculates real-time cryptographic entropy, and assists SecOps engineers and users to eliminate credential vulnerabilities.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-primary" style="padding: 0.9rem 2rem; font-size: 1.05rem;">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Get Started</span>
+      </a>
+      <a href="{{ url_for('analyze') }}" class="btn btn-secondary" style="padding: 0.9rem 2rem; font-size: 1.05rem;">
+        <i class="fa-solid fa-key"></i>
+        <span>Analyze Password</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Why Password Security Matters -->
+  <section style="max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Why Password Security Matters</h2>
+      <p style="color: var(--text-muted);">81% of data breaches leverage weak, reused, or stolen credentials.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+      <div class="glass-card" style="padding: 2rem;">
+        <div class="stat-icon green" style="margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Strong Passwords</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+          Defend against distributed brute-force attacks and high-speed GPU cracking clusters with high-entropy character distribution.
+        </p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem;">
+        <div class="stat-icon blue" style="margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Secure Generation</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+          Generate unguessable passwords using Python's cryptographic <code class="mono-text" style="color: var(--accent-cyan);">secrets</code> CSPRNG library without predictable patterns.
+        </p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem;">
+        <div class="stat-icon amber" style="margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Security Insights</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+          Understand the exact mechanics of weak credentials with actionable NIST 800-63B recommendations and histogram analytics.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section style="max-width: 1100px; margin: 5rem auto; padding: 0 1.5rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">How It Works</h2>
+      <p style="color: var(--text-muted);">Three seamless steps to absolute credential confidence.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+      <div class="glass-card" style="padding: 2rem; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto 1.25rem auto; font-weight: 800;">1</div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Enter Candidate Password</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Type or paste candidate characters into the zero-storage evaluation engine.</p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto 1.25rem auto; font-weight: 800;">2</div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Analyze Entropy & Strength</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Instant 5-factor heuristic test evaluates uppercase, lowercase, numbers, symbols, and length.</p>
+      </div>
+
+      <div class="glass-card" style="padding: 2rem; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: var(--strength-strong); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto 1.25rem auto; font-weight: 800;">3</div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Improve Security</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Apply recommendations or deploy generated CSPRNG passwords directly into your accounts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--border-subtle); padding: 3rem 1.5rem; text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+      <div class="logo-shield" style="width: 28px; height: 28px; font-size: 0.85rem;">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <span style="font-weight: 700; color: var(--text-main);">SecurePass Security Suite</span>
+    </div>
+    <p>Zero-Knowledge Privacy • Cryptographically Verified • Built with Python, Flask & Modern Cybersecurity UI</p>
+  </footer>
+</body>
+</html>

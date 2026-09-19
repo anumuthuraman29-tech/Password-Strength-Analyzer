@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Overview{% endblock %}
+{% block page_heading %}Security Operations Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<section class="welcome-banner">
+  <div class="welcome-text">
+    <div style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 600; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem;">
+      <i class="fa-solid fa-shield-halved"></i> Active Threat Prevention
+    </div>
+    <h1>Welcome back, <span class="gradient-text">{{ session.get('username') or 'SecOps Analyst' }}</span></h1>
+    <p>Keep your digital accounts and enterprise infrastructure protected with cryptographically strong passwords and policy compliance.</p>
+  </div>
+  <div>
+    <a href="{{ url_for('analyze') }}" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+      <i class="fa-solid fa-key"></i>
+      <span>Analyze Password</span>
+    </a>
+  </div>
+</section>
+
+<!-- Security Overview Cards -->
+<section class="stat-grid">
+  <!-- Total Checked -->
+  <div class="glass-card stat-card glass-card-interactive">
+    <div class="stat-info">
+      <div class="stat-label">Passwords Checked</div>
+      <div class="stat-value">{{ stats.total }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-circle-check" style="color: var(--accent-cyan);"></i>
+        <span>Logged in zero-knowledge history</span>
+      </div>
+    </div>
+    <div class="stat-icon blue">
+      <i class="fa-solid fa-fingerprint"></i>
+    </div>
+  </div>
+
+  <!-- Strong Passwords -->
+  <div class="glass-card stat-card glass-card-interactive">
+    <div class="stat-info">
+      <div class="stat-label">Strong Passwords</div>
+      <div class="stat-value" style="color: #34d399;">{{ stats.strong }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-arrow-trend-up" style="color: #10b981;"></i>
+        <span style="color: #34d399;">{{ stats.percentages.strong }}% enterprise grade</span>
+      </div>
+    </div>
+    <div class="stat-icon green">
+      <i class="fa-solid fa-shield-check"></i>
+    </div>
+  </div>
+
+  <!-- Medium Passwords -->
+  <div class="glass-card stat-card glass-card-interactive">
+    <div class="stat-info">
+      <div class="stat-label">Medium Passwords</div>
+      <div class="stat-value" style="color: #fbbf24;">{{ stats.medium }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>
+        <span style="color: #fbbf24;">{{ stats.percentages.medium }}% moderate entropy</span>
+      </div>
+    </div>
+    <div class="stat-icon amber">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+  </div>
+
+  <!-- Weak Passwords -->
+  <div class="glass-card stat-card glass-card-interactive">
+    <div class="stat-info">
+      <div class="stat-label">Weak Passwords</div>
+      <div class="stat-value" style="color: #f87171;">{{ stats.weak }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>
+        <span style="color: #f87171;">{{ stats.percentages.weak }}% vulnerable targets</span>
+      </div>
+    </div>
+    <div class="stat-icon red">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Action & Recent Audit Split -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+  <!-- Fast Tools Card -->
+  <div class="glass-card" style="padding: 1.75rem;">
+    <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.65rem;">
+      <i class="fa-solid fa-bolt" style="color: var(--accent-cyan);"></i>
+      <span>Security Quick Actions</span>
+    </h3>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Execute security audits and deploy high-entropy credentials.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+      <a href="{{ url_for('analyze') }}" class="glass-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Evaluate Heuristic Strength</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim);">Live 5-point NIST & OWASP complexity verification</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: var(--text-dim); font-size: 0.85rem;"></i>
+      </a>
+
+      <a href="{{ url_for('generator') }}" class="glass-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(168, 85, 247, 0.12); color: var(--accent-purple); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Generate CSPRNG Password</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim);">Cryptographic randomness with custom rules & length</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: var(--text-dim); font-size: 0.85rem;"></i>
+      </a>
+
+      <a href="{{ url_for('statistics') }}" class="glass-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 40px; height: 40px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); color: var(--strength-strong); display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Security Analytics & Charts</div>
+            <div style="font-size: 0.78rem; color: var(--text-dim);">Doughnut and bar visualizers of historical telemetry</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right" style="color: var(--text-dim); font-size: 0.85rem;"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Audit Logs Snapshot -->
+  <div class="glass-card" style="padding: 1.75rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <div>
+        <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.65rem;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-cyan);"></i>
+          <span>Recent Audits</span>
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Zero-knowledge log entries.</p>
+      </div>
+      <a href="{{ url_for('history') }}" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">View All</a>
+    </div>
+
+    {% if recent_history %}
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        {% for item in recent_history[:4] %}
+          <div style="padding: 0.85rem 1rem; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">{{ item.category or 'Password Audit' }}</div>
+              <div style="font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono);">{{ item.time }}</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="badge badge-{{ item.strength|lower }}">{{ item.strength }}</span>
+              <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted);">{{ item.score }}/5</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="padding: 2rem 1rem;">
+        <i class="fa-solid fa-shield-slash empty-icon" style="font-size: 2.2rem;"></i>
+        <div class="empty-title" style="font-size: 1.1rem;">No Audits Yet</div>
+        <p class="empty-desc" style="font-size: 0.85rem;">Run your first security check now.</p>
+        <a href="{{ url_for('analyze') }}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Analyze Now</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

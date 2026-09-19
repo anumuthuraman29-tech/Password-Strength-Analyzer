@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePass — Redirecting</title>
+    <script>
+      // Single Page App fallback for static hosting / deployment
+      // Converts path /xxx into /#xxx so index.html can route appropriately
+      var path = window.location.pathname;
+      var cleanPath = path.replace(/^\//, '').replace(/\/$/, '');
+      var search = window.location.search;
+      var hash = window.location.hash;
+      var redirectHash = hash || (cleanPath ? '#' + cleanPath : '');
+      window.location.replace('/' + (redirectHash ? redirectHash : '') + search);
+    </script>
+    <style>
+      body {
+        margin: 0;
+        background-color: #070b14;
+        color: #94a3b8;
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+      a {
+        color: #38bdf8;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2>Redirecting to SecurePass Console...</h2>
+      <p>If you are not redirected automatically, <a href="/">click here to continue</a>.</p>
+    </div>
+  </body>
+</html>

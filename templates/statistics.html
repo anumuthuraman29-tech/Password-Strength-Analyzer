@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Security Statistics & Analytics{% endblock %}
+{% block page_heading %}Security Analytics & Telemetry{% endblock %}
+
+{% block extra_head %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<section class="stat-grid">
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <div class="stat-label">Total Passwords Checked</div>
+      <div class="stat-value">{{ stats.total }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-database" style="color: var(--accent-cyan);"></i>
+        <span>Aggregated audits</span>
+      </div>
+    </div>
+    <div class="stat-icon blue">
+      <i class="fa-solid fa-chart-line"></i>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <div class="stat-label">Strong Passwords</div>
+      <div class="stat-value" style="color: #34d399;">{{ stats.strong }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-shield-check" style="color: #10b981;"></i>
+        <span style="color: #34d399;">{{ stats.percentages.strong }}% of total checks</span>
+      </div>
+    </div>
+    <div class="stat-icon green">
+      <i class="fa-solid fa-shield"></i>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <div class="stat-label">Medium Passwords</div>
+      <div class="stat-value" style="color: #fbbf24;">{{ stats.medium }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>
+        <span style="color: #fbbf24;">{{ stats.percentages.medium }}% of total checks</span>
+      </div>
+    </div>
+    <div class="stat-icon amber">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <div class="stat-label">Weak Passwords</div>
+      <div class="stat-value" style="color: #f87171;">{{ stats.weak }}</div>
+      <div class="stat-trend">
+        <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>
+        <span style="color: #f87171;">{{ stats.percentages.weak }}% of total checks</span>
+      </div>
+    </div>
+    <div class="stat-icon red">
+      <i class="fa-solid fa-circle-radiation"></i>
+    </div>
+  </div>
+</section>
+
+<!-- Visual Charts Section -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+  <!-- Doughnut Chart Card -->
+  <div class="glass-card" style="padding: 1.75rem;">
+    <div style="margin-bottom: 1.25rem;">
+      <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-chart-pie" style="color: var(--accent-cyan);"></i>
+        <span>Strength Ratio Distribution</span>
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">Proportion of strong, medium, and weak credentials evaluated.</p>
+    </div>
+
+    <div style="position: relative; height: 280px; width: 100%;">
+      <canvas id="strengthDonutChart"></canvas>
+    </div>
+
+    <div style="margin-top: 1.5rem; display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid var(--border-subtle); text-align: center;">
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Strong</div>
+        <div style="font-size: 1.25rem; font-weight: 700; color: #34d399;">{{ stats.percentages.strong }}%</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Medium</div>
+        <div style="font-size: 1.25rem; font-weight: 700; color: #fbbf24;">{{ stats.percentages.medium }}%</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase;">Weak</div>
+        <div style="font-size: 1.25rem; font-weight: 700; color: #f87171;">{{ stats.percentages.weak }}%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bar Chart Card -->
+  <div class="glass-card" style="padding: 1.75rem;">
+    <div style="margin-bottom: 1.25rem;">
+      <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-chart-simple" style="color: var(--accent-purple);"></i>
+        <span>Entropy Score Histogram (0–5)</span>
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">Granular frequency distribution of calculated audit scores.</p>
+    </div>
+
+    <div style="position: relative; height: 280px; width: 100%;">
+      <canvas id="scoreBarChart"></canvas>
+    </div>
+
+    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); font-size: 0.82rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan);"></i>
+      <span>Scores 0-2 indicate critical vulnerability; scores 3-4 denote moderate entropy; score 5 denotes enterprise-grade security.</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

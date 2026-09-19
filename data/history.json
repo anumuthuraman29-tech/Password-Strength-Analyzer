@@ -1,0 +1,42 @@
+[
+  {
+    "id": "audit-1726760000000",
+    "time": "2026-09-18 14:32",
+    "score": 5,
+    "strength": "Strong",
+    "category": "Enterprise Grade",
+    "status": "Passed All Checks"
+  },
+  {
+    "id": "audit-1726760100000",
+    "time": "2026-09-18 16:15",
+    "score": 3,
+    "strength": "Medium",
+    "category": "Moderate Risk",
+    "status": "Missing Special Character"
+  },
+  {
+    "id": "audit-1726760200000",
+    "time": "2026-09-19 09:10",
+    "score": 1,
+    "strength": "Weak",
+    "category": "Critical Vulnerability",
+    "status": "Short Length & Low Entropy"
+  },
+  {
+    "id": "audit-1726760300000",
+    "time": "2026-09-19 11:24",
+    "score": 4,
+    "strength": "Medium",
+    "category": "Acceptable",
+    "status": "Missing Uppercase Letter"
+  },
+  {
+    "id": "audit-1726760400000",
+    "time": "2026-09-19 13:45",
+    "score": 5,
+    "strength": "Strong",
+    "category": "Enterprise Grade",
+    "status": "Passed All Checks"
+  }
+]

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Audit History{% endblock %}
+{% block page_heading %}Password Check History{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="padding: 2rem;">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.75rem;">
+    <div>
+      <h2 style="font-size: 1.4rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.6rem;">
+        <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-cyan);"></i>
+        <span>Security Audit Trail</span>
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">
+        Complete zero-knowledge telemetry log. <span style="color: #34d399;"><i class="fa-solid fa-shield-check"></i> Actual passwords are never stored.</span>
+      </p>
+    </div>
+
+    {% if history %}
+    <form action="{{ url_for('clear_history') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear your audit history? This action cannot be reversed.');">
+      <button type="submit" class="btn btn-danger" style="padding: 0.55rem 1rem; font-size: 0.85rem;">
+        <i class="fa-solid fa-trash-can"></i>
+        <span>Clear History</span>
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <!-- Search and Filter Controls -->
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center; justify-content: space-between;">
+    <div class="input-group-cyber" style="max-width: 340px;">
+      <input type="text" id="historySearchInput" class="input-cyber" placeholder="Search by category or date..." style="padding: 0.65rem 1rem 0.65rem 2.4rem; font-size: 0.88rem;">
+      <span style="position: absolute; left: 12px; color: var(--text-dim);">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+      <label for="strengthFilter" style="font-size: 0.82rem; color: var(--text-dim);">Filter:</label>
+      <select id="strengthFilter" class="input-cyber" style="padding: 0.55rem 1rem; font-size: 0.85rem; width: auto; background: rgba(15, 23, 42, 0.9);">
+        <option value="all">All Strengths</option>
+        <option value="strong">Strong Only</option>
+        <option value="medium">Medium Only</option>
+        <option value="weak">Weak Only</option>
+      </select>
+
+      <label for="dateSort" style="font-size: 0.82rem; color: var(--text-dim); margin-left: 0.5rem;">Sort:</label>
+      <select id="dateSort" class="input-cyber" style="padding: 0.55rem 1rem; font-size: 0.85rem; width: auto; background: rgba(15, 23, 42, 0.9);">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="highest">Highest Score</option>
+        <option value="lowest">Lowest Score</option>
+      </select>
+    </div>
+  </div>
+
+  {% if history %}
+  <div class="table-responsive">
+    <table class="cyber-table" id="historyTable">
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Score</th>
+          <th>Strength</th>
+          <th>Security Classification</th>
+          <th>Audit Status</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody">
+        {% for item in history %}
+        <tr data-strength="{{ item.strength|lower }}" data-score="{{ item.score }}" data-time="{{ item.time }}">
+          <td style="font-family: var(--font-mono); color: var(--text-muted); font-size: 0.85rem;">
+            <i class="fa-regular fa-clock" style="margin-right: 0.4rem; color: var(--text-dim);"></i>
+            {{ item.time }}
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-family: var(--font-mono); font-weight: 700; color: #fff;">{{ item.score }} / 5</span>
+              <div style="width: 40px; height: 5px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: {{ (item.score / 5) * 100 }}%; background: {% if item.score >= 5 %}#10b981{% elif item.score >= 3 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-{{ item.strength|lower }}">
+              {% if item.strength == 'Strong' %}
+                <i class="fa-solid fa-shield-check"></i> Strong
+              {% elif item.strength == 'Medium' %}
+                <i class="fa-solid fa-shield-halved"></i> Medium
+              {% else %}
+                <i class="fa-solid fa-triangle-exclamation"></i> Weak
+              {% endif %}
+            </span>
+          </td>
+          <td style="font-weight: 600; color: var(--text-main);">
+            {{ item.category or 'Password Evaluation' }}
+          </td>
+          <td style="color: var(--text-muted); font-size: 0.85rem;">
+            {{ item.status or 'Audit Log Recorded' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+    <div class="empty-title">No password checks yet.</div>
+    <p class="empty-desc">
+      Your audit history is completely clean. Perform a password strength analysis to evaluate credentials and populate your telemetry log.
+    </p>
+    <a href="{{ url_for('analyze') }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+      <i class="fa-solid fa-key"></i>
+      <span>Analyze Your First Password</span>
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('historySearchInput');
+  const strengthFilter = document.getElementById('strengthFilter');
+  const dateSort = document.getElementById('dateSort');
+  const tableBody = document.getElementById('historyTableBody');
+
+  if (!tableBody) return;
+
+  function filterAndSort() {
+    const query = (searchInput ? searchInput.value : '').toLowerCase();
+    const strength = strengthFilter ? strengthFilter.value : 'all';
+    const sort = dateSort ? dateSort.value : 'newest';
+
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+    rows.forEach(row => {
+      const rowStrength = row.dataset.strength;
+      const text = row.textContent.toLowerCase();
+
+      const matchesSearch = text.includes(query);
+      const matchesStrength = strength === 'all' || rowStrength === strength;
+
+      row.style.display = matchesSearch && matchesStrength ? '' : 'none';
+    });
+
+    // Sort visible rows
+    rows.sort((a, b) => {
+      if (sort === 'newest') {
+        return b.dataset.time.localeCompare(a.dataset.time);
+      } else if (sort === 'oldest') {
+        return a.dataset.time.localeCompare(b.dataset.time);
+      } else if (sort === 'highest') {
+        return parseInt(b.dataset.score) - parseInt(a.dataset.score);
+      } else if (sort === 'lowest') {
+        return parseInt(a.dataset.score) - parseInt(b.dataset.score);
+      }
+      return 0;
+    });
+
+    rows.forEach(row => tableBody.appendChild(row));
+  }
+
+  if (searchInput) searchInput.addEventListener('input', filterAndSort);
+  if (strengthFilter) strengthFilter.addEventListener('change', filterAndSort);
+  if (dateSort) dateSort.addEventListener('change', filterAndSort);
+});
+</script>
+{% endblock %}

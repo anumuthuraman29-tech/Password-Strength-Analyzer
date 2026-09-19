@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %} — SecurePass</title>
+  <meta name="description" content="SecurePass — Professional Cybersecurity Password Strength Analyzer & Security Dashboard">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Cyber Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-shield">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="sidebar-brand">
+          <span class="brand-title">Secure<span class="gradient-text">Pass</span></span>
+          <span class="brand-subtitle">Security Suite</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="{{ url_for('dashboard') }}" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('analyze') }}" class="nav-link {% if active_page == 'analyze' %}active{% endif %}">
+          <i class="fa-solid fa-key"></i>
+          <span>Analyze Password</span>
+        </a>
+        <a href="{{ url_for('generator') }}" class="nav-link {% if active_page == 'generator' %}active{% endif %}">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>Password Generator</span>
+        </a>
+        <a href="{{ url_for('history') }}" class="nav-link {% if active_page == 'history' %}active{% endif %}">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>History</span>
+        </a>
+        <a href="{{ url_for('statistics') }}" class="nav-link {% if active_page == 'statistics' %}active{% endif %}">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Security Statistics</span>
+        </a>
+        <a href="{{ url_for('settings') }}" class="nav-link {% if active_page == 'settings' %}active{% endif %}">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="security-badge">
+          <span class="status-dot"></span>
+          <span>Zero-Knowledge Engine</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="nav-link" style="color: #f87171;">
+          <i class="fa-solid fa-right-from-bracket" style="color: #f87171;"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle navigation menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h2 class="page-title">{% block page_heading %}Dashboard{% endblock %}</h2>
+        </div>
+
+        <div class="topbar-right">
+          <button class="icon-btn" id="searchBtn" title="Quick Search" onclick="showToast('Global audit search active', 'info')">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <button class="icon-btn" id="notifBtn" title="Security Notifications">
+            <i class="fa-solid fa-bell"></i>
+            <span class="icon-badge"></span>
+          </button>
+
+          <div class="user-profile-menu" id="userProfileMenuBtn">
+            <div class="user-avatar">
+              {{ (session.get('username') or 'A')[0]|upper }}
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ session.get('username') or 'SecOps Analyst' }}</span>
+              <span class="user-role">Administrator</span>
+            </div>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-dim); margin-left: 0.25rem;"></i>
+
+            <!-- Dropdown Menu -->
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="{{ url_for('settings') }}" class="dropdown-item">
+                <i class="fa-solid fa-user-gear"></i> Preferences
+              </a>
+              <a href="{{ url_for('analyze') }}" class="dropdown-item">
+                <i class="fa-solid fa-shield-virus"></i> Audit Password
+              </a>
+              <div style="height: 1px; background: var(--border-subtle); margin: 0.35rem 0;"></div>
+              <a href="{{ url_for('logout') }}" class="dropdown-item" style="color: #f87171;">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Page Content Body -->
+      <main class="page-content">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div style="margin-bottom: 1.5rem;">
+              {% for category, message in messages %}
+                <div class="toast {{ 'success' if category == 'success' else 'error' }}" style="position: static; margin-bottom: 0.75rem; width: 100%;">
+                  <i class="fa-solid {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }}"></i>
+                  <span>{{ message }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Main Utilities Script -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

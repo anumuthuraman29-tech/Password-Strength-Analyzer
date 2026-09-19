@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Cryptographic Password Generator{% endblock %}
+{% block page_heading %}Password Generator{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+  <div class="glass-card" style="padding: 2.25rem; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+      <div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.65rem;">
+          <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-purple);"></i>
+          <span>Secure Password Generator</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Generate cryptographically secure passwords powered by Python's <code class="mono-text" style="color: var(--accent-cyan); background: rgba(56, 189, 248, 0.1); padding: 0.15rem 0.4rem; border-radius: 4px;">secrets</code> module (CSPRNG).
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; padding: 0.35rem 0.75rem; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: var(--radius-full); color: #c084fc;">
+        <i class="fa-solid fa-shield-cat"></i>
+        <span>CSPRNG Entropy</span>
+      </div>
+    </div>
+
+    <!-- Output Display Field -->
+    <div style="margin-bottom: 1.75rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <label for="generatedPassword" style="font-size: 0.88rem; font-weight: 600;">Generated Credential</label>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <span id="genCharCount" style="font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-mono);">16 characters</span>
+          <span id="genStrengthBadge" class="badge badge-strong">
+            <i class="fa-solid fa-shield-halved"></i> Strong (Enterprise)
+          </span>
+        </div>
+      </div>
+
+      <div class="input-group-cyber">
+        <input 
+          type="text" 
+          id="generatedPassword" 
+          class="input-cyber" 
+          readonly 
+          style="font-size: 1.3rem; letter-spacing: 0.05em; color: #38bdf8; background: rgba(7, 11, 20, 0.9); font-weight: 600; text-align: center; padding: 1.25rem;"
+          spellcheck="false"
+        >
+      </div>
+    </div>
+
+    <!-- Action Buttons Bar -->
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <button type="button" class="btn btn-primary" id="copyBtn" style="flex: 1; min-width: 180px;">
+        <i class="fa-solid fa-copy"></i>
+        <span>Copy Password</span>
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="regenerateBtn" style="flex: 1; min-width: 180px;">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        <span>Regenerate</span>
+      </button>
+
+      <button type="button" class="btn btn-outline" id="generateBtn" style="flex: 1; min-width: 180px;">
+        <i class="fa-solid fa-dice"></i>
+        <span>Generate Password</span>
+      </button>
+    </div>
+
+    <!-- Configuration Options -->
+    <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.75rem;">
+      <div style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 1.25rem;">
+        Generation Parameters
+      </div>
+
+      <!-- Length Slider -->
+      <div class="config-group">
+        <div class="config-label">
+          <span>Password Length</span>
+          <span style="color: var(--accent-cyan); font-family: var(--font-mono);"><strong id="genLengthValue">16</strong> characters</span>
+        </div>
+        <input type="range" id="genLengthSlider" class="cyber-slider" min="8" max="50" value="16">
+        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-dim); margin-top: 0.35rem;">
+          <span>8 (Basic)</span>
+          <span>16 (Recommended)</span>
+          <span>32 (High Security)</span>
+          <span>50 (Paranoid)</span>
+        </div>
+      </div>
+
+      <!-- Checkboxes / Toggles -->
+      <div class="switch-grid">
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Uppercase Letters</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono);">A, B, C, D...</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="genUpper" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Lowercase Letters</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono);">a, b, c, d...</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="genLower" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Numerical Digits</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono);">0, 1, 2, 3, 4...</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="genNumbers" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Special Symbols</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono);">! @ # $ % ^ & *</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="genSpecial" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security Protocol Note -->
+  <div class="glass-card" style="padding: 1.5rem; display: flex; align-items: flex-start; gap: 1rem;">
+    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(56, 189, 248, 0.12); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+      <i class="fa-solid fa-code-compare"></i>
+    </div>
+    <div>
+      <div style="font-weight: 600; font-size: 0.92rem; margin-bottom: 0.25rem;">Cryptographic Randomness Guarantee</div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.5;">
+        SecurePass exclusively utilizes Python's <code class="mono-text" style="color: var(--accent-cyan);">secrets</code> module and browser Web Crypto API (<code class="mono-text">crypto.getRandomValues</code>) backed by system entropy sources (<code class="mono-text">/dev/urandom</code>). Pseudo-random generators like Python's standard <code class="mono-text">random</code> module are completely forbidden.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/generator.js') }}"></script>
+{% endblock %}

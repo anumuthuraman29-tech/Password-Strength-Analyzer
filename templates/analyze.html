@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Password Strength Analyzer{% endblock %}
+{% block page_heading %}Password Strength Analyzer{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+  <!-- Main Analyzer Card -->
+  <div class="glass-card" style="padding: 2.25rem; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+      <div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.65rem;">
+          <i class="fa-solid fa-shield-halved" style="color: var(--accent-cyan);"></i>
+          <span>Analyze Your Password</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Evaluate cryptographic complexity, entropy level, and brute-force vulnerability in real time.
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; padding: 0.35rem 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-full); color: #34d399;">
+        <i class="fa-solid fa-lock"></i>
+        <span>Zero-Storage Guaranteed</span>
+      </div>
+    </div>
+
+    <!-- Password Input Field -->
+    <div style="margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <label for="analyzerPassword" style="font-size: 0.88rem; font-weight: 600;">Candidate Password</label>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <span id="charCount" style="font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-mono);">0 chars</span>
+          <button type="button" id="clearPasswordBtn" class="btn-outline" style="padding: 0.2rem 0.6rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer;">
+            <i class="fa-solid fa-eraser"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="input-group-cyber">
+        <input 
+          type="password" 
+          id="analyzerPassword" 
+          class="input-cyber" 
+          placeholder="Enter or paste password to analyze..." 
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <button type="button" class="input-action-btn" id="togglePasswordVisibility" aria-label="Toggle password visibility">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Strength Meter -->
+    <div class="strength-meter-wrap">
+      <div class="meter-track">
+        <div id="meterFill" class="meter-fill"></div>
+      </div>
+      <div class="meter-meta">
+        <div>
+          <span style="color: var(--text-dim); font-size: 0.82rem;">Strength Assessment: </span>
+          <span id="strengthLabel" class="badge">Awaiting Input</span>
+        </div>
+        <div>
+          <span style="color: var(--text-dim); font-size: 0.82rem;">Entropy Score: </span>
+          <strong id="scoreValue" style="font-family: var(--font-mono); color: #fff; font-size: 0.95rem;">0 / 5</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Requirements Checklist -->
+    <div style="margin-top: 1.75rem;">
+      <div style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 0.75rem;">
+        Security Policy Requirements
+      </div>
+
+      <div class="req-grid">
+        <div class="req-item" id="reqLength">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Minimum 8 characters</span>
+        </div>
+        <div class="req-item" id="reqUpper">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Uppercase letter (A-Z)</span>
+        </div>
+        <div class="req-item" id="reqLower">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Lowercase letter (a-z)</span>
+        </div>
+        <div class="req-item" id="reqNumber">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Numerical digit (0-9)</span>
+        </div>
+        <div class="req-item" id="reqSpecial">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Special character (!@#$)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Recommendation Box -->
+    <div class="recommendation-box" id="recommendationBox" style="display: none;">
+      <i class="fa-solid fa-lightbulb"></i>
+      <div>
+        <div style="font-weight: 600; font-size: 0.88rem; color: #fff; margin-bottom: 0.2rem;">SecOps Recommendation</div>
+        <p id="recommendationText" style="color: var(--text-muted); font-size: 0.85rem; margin: 0;"></p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 1rem; margin-top: 2rem; align-items: center;">
+      <button type="button" class="btn btn-primary" id="analyzeBtn">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Analyze & Save Audit</span>
+      </button>
+
+      <a href="{{ url_for('generator') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Generate Stronger Password</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Educational Explainer Card -->
+  <div class="glass-card" style="padding: 1.75rem;">
+    <h3 style="font-size: 1.1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fa-solid fa-circle-info" style="color: var(--accent-cyan);"></i>
+      <span>Understanding Password Strength Metrics</span>
+    </h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+      <div>
+        <strong style="color: var(--strength-weak); display: block; margin-bottom: 0.25rem;">Weak (Score 0-2)</strong>
+        Vulnerable to automated dictionary attacks and instant rainbow table lookups. Must not be used for any sensitive authentication.
+      </div>
+      <div>
+        <strong style="color: var(--strength-medium); display: block; margin-bottom: 0.25rem;">Medium (Score 3-4)</strong>
+        Resistant to basic automated bots, but remains susceptible to targeted GPU-accelerated hash cracking without multi-factor authentication.
+      </div>
+      <div>
+        <strong style="color: var(--strength-strong); display: block; margin-bottom: 0.25rem;">Strong (Score 5)</strong>
+        Meets NIST 800-63B and OWASP guidelines with multi-pool character distribution and sufficient brute-force calculation time.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analyzer.js') }}"></script>
+{% endblock %}

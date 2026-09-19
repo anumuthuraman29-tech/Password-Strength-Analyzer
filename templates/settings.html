@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Application Settings{% endblock %}
+{% block page_heading %}SecOps Settings & Policies{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+  <form action="{{ url_for('save_settings') }}" method="POST">
+    <!-- Profile Section -->
+    <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.6rem;">
+        <i class="fa-solid fa-user-shield" style="color: var(--accent-cyan);"></i>
+        <span>Security Operator Profile</span>
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Manage your analyst credentials and alert contact endpoints.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+        <div>
+          <label for="usernameInput" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Operator Username</label>
+          <input type="text" id="usernameInput" name="username" class="input-cyber" value="{{ session.get('username') or 'secops_admin' }}" required>
+        </div>
+        <div>
+          <label for="emailInput" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Alert Email Destination</label>
+          <input type="email" id="emailInput" name="email" class="input-cyber" value="{{ session.get('email') or 'admin@securepass.io' }}" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Policy Configuration -->
+    <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+        <h3 style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-lock" style="color: var(--accent-purple);"></i>
+          <span>Enterprise Password Policy Enforcement</span>
+        </h3>
+        <span class="badge badge-strong">NIST 800-63B Compliant</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Configure default baseline criteria for automated heuristic evaluations.</p>
+
+      <div class="config-group" style="margin-bottom: 1.5rem;">
+        <div class="config-label">
+          <span>Minimum Enforced Password Length</span>
+          <span style="color: var(--accent-cyan); font-family: var(--font-mono);"><strong id="policyLengthVal">8</strong> characters</span>
+        </div>
+        <input type="range" name="min_length" id="policyLength" class="cyber-slider" min="8" max="24" value="8" oninput="document.getElementById('policyLengthVal').textContent = this.value">
+      </div>
+
+      <div class="switch-grid">
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Require Uppercase Letters</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Enforce [A-Z] character requirement</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="require_uppercase" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Require Lowercase Letters</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Enforce [a-z] character requirement</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="require_lowercase" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Require Numerical Digits</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Enforce [0-9] character requirement</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="require_numbers" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Require Special Symbols</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Enforce symbol requirement (!@#$)</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="require_special" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Appearance & Preferences -->
+    <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.6rem;">
+        <i class="fa-solid fa-palette" style="color: var(--accent-cyan);"></i>
+        <span>Theme & Interface Preferences</span>
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Tailor dashboard visualization and operational toasts.</p>
+
+      <div class="switch-grid">
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Dark High-Contrast Mode</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Cybersecurity midnight palette</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="themeToggle" checked onchange="toggleDashboardTheme(this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Desktop Notifications</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Interactive toast telemetry alerts</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="notifications_enabled" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+
+        <label class="switch-item">
+          <div>
+            <div style="font-weight: 600; font-size: 0.88rem;">Security Advice Hints</div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">Show proactive NIST recommendations</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" name="security_tips" checked>
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Submit Button Bar -->
+    <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+      <button type="reset" class="btn btn-secondary">Reset Defaults</button>
+      <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+        <i class="fa-solid fa-floppy-disk"></i>
+        <span>Save Policy Settings</span>
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleDashboardTheme(isDark) {
+  if (!isDark) {
+    document.body.classList.add('light-theme');
+    showToast('Switched to High-Readability Light Canvas', 'info');
+  } else {
+    document.body.classList.remove('light-theme');
+    showToast('Restored Cybersecurity Dark Navy Palette', 'info');
+  }
+}
+</script>
+{% endblock %}
